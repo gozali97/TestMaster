@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  minio:
+    image: minio/minio:latest
+    container_name: testmaster-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio-data:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    networks:
+      - testmaster-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    restart: unless-stopped
+
+  # Create buckets on startup
+  minio-init:
+    image: minio/mc:latest
+    container_name: testmaster-minio-init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      sleep 10;
+      /usr/bin/mc config host add myminio http://minio:9000 minioadmin minioadmin;
+      /usr/bin/mc mb myminio/testmaster-screenshots;
+      /usr/bin/mc mb myminio/testmaster-videos;
+      /usr/bin/mc mb myminio/testmaster-baselines;
+      /usr/bin/mc mb myminio/testmaster-reports;
+      /usr/bin/mc anonymous set download myminio/testmaster-screenshots;
+      /usr/bin/mc anonymous set download myminio/testmaster-videos;
+      /usr/bin/mc anonymous set download myminio/testmaster-baselines;
+      /usr/bin/mc anonymous set download myminio/testmaster-reports;
+      echo 'Buckets created successfully!';
+      exit 0;
+      "
+    networks:
+      - testmaster-network
+
+volumes:
+  minio-data:
+    driver: local
+
+networks:
+  testmaster-network:
+    driver: bridge

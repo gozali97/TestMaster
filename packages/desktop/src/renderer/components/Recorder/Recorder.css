@@ -1,0 +1,273 @@
+.recorder {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #ffffff;
+  padding: 24px;
+}
+
+.recorder-header {
+  margin-bottom: 24px;
+}
+
+.recorder-header h2 {
+  font-size: 24px;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.recorder-header p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.recorder-controls {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  margin-bottom: 24px;
+}
+
+.browser-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.browser-selector label {
+  color: #374151;
+  font-size: 13px;
+}
+
+.browser-selector select {
+  padding: 6px 12px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.recording-controls {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+
+.recorder-controls button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-start {
+  background: #dc3545;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-start:hover {
+  background: #c82333;
+}
+
+.record-icon {
+  font-size: 18px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.btn-pause {
+  background: #ffc107;
+  color: #000;
+}
+
+.btn-pause:hover {
+  background: #e0a800;
+}
+
+.btn-stop {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-stop:hover {
+  background: #5a6268;
+}
+
+.recording-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #374151;
+  font-size: 13px;
+}
+
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.status-indicator.recording {
+  background: #dc3545;
+  animation: blink 1s infinite;
+}
+
+.status-indicator.paused {
+  background: #ffc107;
+}
+
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0.3; }
+}
+
+.recorded-actions {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.actions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.actions-header h3 {
+  color: #374151;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn-generate {
+  padding: 6px 16px;
+  background: #16a34a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-generate:hover {
+  background: #15803d;
+}
+
+.actions-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.action-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.action-number {
+  width: 28px;
+  height: 28px;
+  background: #16a34a;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.action-content {
+  flex: 1;
+}
+
+.action-type {
+  font-weight: 600;
+  color: #4ec9b0;
+  font-size: 14px;
+  margin-bottom: 4px;
+  text-transform: capitalize;
+}
+
+.action-locator {
+  font-size: 12px;
+  color: #ce9178;
+  margin-bottom: 2px;
+}
+
+.action-value {
+  font-size: 12px;
+  color: #9cdcfe;
+  margin-bottom: 2px;
+}
+
+.action-time {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.action-delete {
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  cursor: pointer;
+  border-radius: 3px;
+  font-size: 18px;
+  line-height: 1;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.action-delete:hover {
+  background: #f14c4c;
+  border-color: #f14c4c;
+  color: white;
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  color: #6b7280;
+}
+
+.empty-state p:first-child {
+  font-size: 16px;
+  margin-bottom: 8px;
+  color: #374151;
+}

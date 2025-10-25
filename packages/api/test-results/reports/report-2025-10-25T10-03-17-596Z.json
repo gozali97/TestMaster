@@ -1,0 +1,245 @@
+{
+  "summary": {
+    "total": 47,
+    "passed": 7,
+    "failed": 40,
+    "healed": 0,
+    "duration": 10532,
+    "coverage": 32
+  },
+  "discovery": {
+    "website": {
+      "url": "https://comathedu.id/",
+      "pagesFound": 15,
+      "userFlows": 2
+    },
+    "api": {
+      "endpointsFound": 0
+    }
+  },
+  "execution": {
+    "total": 47,
+    "passed": 7,
+    "failed": 40,
+    "healed": 0,
+    "duration": 10532
+  },
+  "failures": [
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.title: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.title: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.click: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.click: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "page.goto: Target page, context or browser has been closed",
+      "confidence": 0.6
+    }
+  ],
+  "config": {
+    "websiteUrl": "https://comathedu.id/",
+    "depth": "deep",
+    "enableHealing": true,
+    "createJiraTickets": false,
+    "headless": true,
+    "parallelWorkers": 5,
+    "captureVideo": true,
+    "captureScreenshots": true,
+    "aiAnalysisEnabled": true,
+    "authentication": {
+      "username": "admin@comath.id",
+      "password": "password123"
+    }
+  },
+  "timestamp": "2025-10-25T10:03:17.595Z"
+}

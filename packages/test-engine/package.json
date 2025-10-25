@@ -1,0 +1,28 @@
+{
+  "name": "@testmaster/test-engine",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "lint": "eslint src --ext .ts",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.40.1",
+    "@testmaster/shared": "*",
+    "axios": "^1.6.2",
+    "pixelmatch": "^5.3.0",
+    "playwright": "^1.40.1",
+    "pngjs": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/pixelmatch": "^5.2.6",
+    "@types/pngjs": "^6.0.5",
+    "jest": "^29.7.0",
+    "typescript": "^5.9.3"
+  }
+}
