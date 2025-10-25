@@ -17,12 +17,18 @@ export class CreatePageHandler {
 
     try {
       // Navigate to create page
+      console.log(`   Navigating to: ${createPage.url}`);
       await this.page.goto(createPage.url, {
         waitUntil: 'domcontentloaded',
         timeout: 30000
       });
 
+      // Wait for page to be fully loaded
       await this.page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
+      
+      // Extra wait for any JS to initialize forms
+      await this.page.waitForTimeout(2000);
+      console.log(`   ✅ Page loaded and ready`);
 
       // Find all form fields
       const formFields = createPage.elements.filter(e => 
@@ -40,6 +46,8 @@ export class CreatePageHandler {
           const value = await this.generateFieldValue(field);
           
           if (value) {
+            // Wait a bit before filling each field to ensure form is ready
+            await this.page.waitForTimeout(500);
             await this.fillField(field, value);
             filledCount++;
             console.log(`   ✅ Filled: ${this.getFieldName(field)} = ${value.substring(0, 30)}`);
@@ -50,6 +58,9 @@ export class CreatePageHandler {
       }
 
       console.log(`   Filled ${filledCount}/${formFields.length} fields`);
+      
+      // Wait before submitting to ensure all fields are filled
+      await this.page.waitForTimeout(1000);
 
       // Find and click submit button
       const submitButton = createPage.elements.find(e =>
@@ -239,18 +250,42 @@ export class CreatePageHandler {
       if (!strategy.selector || filled) continue;
 
       try {
-        if (field.type === 'select') {
-          await this.page.selectOption(strategy.selector, value, { timeout: 3000 });
-        } else {
-          await this.page.fill(strategy.selector, value, { timeout: 3000 });
+        // First, wait for element to be visible and enabled
+        await this.page.waitForSelector(strategy.selector, { 
+          state: 'visible', 
+          timeout: 5000 
+        });
+        
+        // Check if element is editable (not disabled/readonly)
+        const isEditable = await this.page.locator(strategy.selector).isEditable().catch(() => false);
+        if (!isEditable) {
+          console.log(`   ⚠️  Field not editable: ${this.getFieldName(field)}`);
+          continue;
         }
-        filled = true;
-        break;
-      } catch (e) {}
+
+        // Clear field first
+        await this.page.locator(strategy.selector).clear().catch(() => {});
+        
+        // Then fill with value
+        if (field.type === 'select') {
+          await this.page.selectOption(strategy.selector, value, { timeout: 5000 });
+        } else {
+          await this.page.fill(strategy.selector, value, { timeout: 5000 });
+        }
+        
+        // Verify value was set
+        const currentValue = await this.page.inputValue(strategy.selector).catch(() => '');
+        if (currentValue === value || field.type === 'select') {
+          filled = true;
+          break;
+        }
+      } catch (e: any) {
+        // Continue to next strategy
+      }
     }
 
     if (!filled) {
-      throw new Error(`Could not fill field`);
+      throw new Error(`Could not fill field: ${this.getFieldName(field)}`);
     }
   }
 

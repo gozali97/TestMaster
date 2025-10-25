@@ -169,6 +169,13 @@ export default function AutonomousTestingPage() {
       
       const results = await response.json();
       console.log('[FRONTEND] ✅ Results received:', results);
+      console.log('[FRONTEND] Test counts:', {
+        generated: results.testsGenerated,
+        passed: results.testsPassed,
+        failed: results.testsFailed,
+        healed: results.testsHealed,
+        duration: results.duration
+      });
       
       setResult(results);
       setIsRunning(false);
@@ -546,33 +553,47 @@ export default function AutonomousTestingPage() {
               gap: '24px' 
             }}>
               <div style={{ textAlign: 'center' }}>
-                <h3 style={{ fontSize: '36px', fontWeight: '700' }}>{result.testsGenerated}</h3>
+                <h3 style={{ fontSize: '36px', fontWeight: '700' }}>
+                  {result.testsGenerated || 0}
+                </h3>
                 <p style={{ color: '#666' }}>Total Tests</p>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <h3 style={{ fontSize: '36px', fontWeight: '700', color: '#10b981' }}>{result.testsPassed}</h3>
+                <h3 style={{ fontSize: '36px', fontWeight: '700', color: '#10b981' }}>
+                  {result.testsPassed || 0}
+                </h3>
                 <p style={{ color: '#666' }}>Passed</p>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <h3 style={{ fontSize: '36px', fontWeight: '700', color: '#ef4444' }}>{result.testsFailed}</h3>
+                <h3 style={{ fontSize: '36px', fontWeight: '700', color: '#ef4444' }}>
+                  {result.testsFailed || 0}
+                </h3>
                 <p style={{ color: '#666' }}>Failed</p>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <h3 style={{ fontSize: '36px', fontWeight: '700', color: '#f59e0b' }}>{result.testsHealed}</h3>
+                <h3 style={{ fontSize: '36px', fontWeight: '700', color: '#f59e0b' }}>
+                  {result.testsHealed || 0}
+                </h3>
                 <p style={{ color: '#666' }}>Healed</p>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <h3 style={{ fontSize: '36px', fontWeight: '700' }}>{result.report.summary.coverage}%</h3>
+                <h3 style={{ fontSize: '36px', fontWeight: '700' }}>
+                  {result.report?.summary?.coverage || 0}%
+                </h3>
                 <p style={{ color: '#666' }}>Coverage</p>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <h3 style={{ fontSize: '36px', fontWeight: '700' }}>{Math.floor(result.duration / 1000 / 60)}m</h3>
+                <h3 style={{ fontSize: '36px', fontWeight: '700' }}>
+                  {result.duration && !isNaN(result.duration) 
+                    ? Math.floor(result.duration / 1000 / 60) 
+                    : 0}m
+                </h3>
                 <p style={{ color: '#666' }}>Duration</p>
               </div>
             </div>
           </div>
 
-          {result.report.details.failures.length > 0 && (
+          {result.report?.details?.failures && result.report.details.failures.length > 0 && (
             <div style={{ 
               background: 'white', 
               borderRadius: '8px', 
@@ -638,43 +659,47 @@ export default function AutonomousTestingPage() {
           )}
 
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-            <button
-              onClick={() => window.open(result.report.files.html, '_blank')}
-              style={{
-                padding: '12px 24px',
-                background: '#667eea',
-                color: 'white',
-                border: 'none',
-                borderRadius: '6px',
-                fontSize: '14px',
-                fontWeight: '500',
-                cursor: 'pointer',
-              }}
-            >
-              📊 View HTML Report
-            </button>
-            <button
-              onClick={() => {
-                const dataStr = JSON.stringify(result.report, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                const downloadAnchor = document.createElement('a');
-                downloadAnchor.setAttribute('href', dataUri);
-                downloadAnchor.setAttribute('download', `autonomous-test-report-${Date.now()}.json`);
-                downloadAnchor.click();
-              }}
-              style={{
-                padding: '12px 24px',
-                background: 'white',
-                color: '#667eea',
-                border: '1px solid #667eea',
-                borderRadius: '6px',
-                fontSize: '14px',
-                fontWeight: '500',
-                cursor: 'pointer',
-              }}
-            >
-              💾 Download JSON
-            </button>
+            {result.report?.files?.html && (
+              <button
+                onClick={() => window.open(result.report.files.html, '_blank')}
+                style={{
+                  padding: '12px 24px',
+                  background: '#667eea',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                }}
+              >
+                📊 View HTML Report
+              </button>
+            )}
+            {result.report && (
+              <button
+                onClick={() => {
+                  const dataStr = JSON.stringify(result.report, null, 2);
+                  const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                  const downloadAnchor = document.createElement('a');
+                  downloadAnchor.setAttribute('href', dataUri);
+                  downloadAnchor.setAttribute('download', `autonomous-test-report-${Date.now()}.json`);
+                  downloadAnchor.click();
+                }}
+                style={{
+                  padding: '12px 24px',
+                  background: 'white',
+                  color: '#667eea',
+                  border: '1px solid #667eea',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                }}
+              >
+                💾 Download JSON
+              </button>
+            )}
             {result.videoPath && (
               <button
                 onClick={() => {

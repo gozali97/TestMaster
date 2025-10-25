@@ -106,14 +106,27 @@ export class AutonomousTestingController {
   async getResults(req: Request, res: Response): Promise<void> {
     try {
       const { sessionId } = req.params;
+      console.log(`[CONTROLLER] Getting results for session: ${sessionId}`);
 
       const results = await this.service.getResults(sessionId);
 
       if (!results) {
+        console.log(`[CONTROLLER] Session not found: ${sessionId}`);
         res.status(404).json({ error: 'Session not found' });
         return;
       }
 
+      // Check if results are ready or still in progress
+      if ((results as any).status === 'in_progress') {
+        console.log(`[CONTROLLER] Session ${sessionId} still in progress`);
+        res.status(202).json({ 
+          status: 'in_progress',
+          message: 'Testing is still in progress. Please wait...'
+        });
+        return;
+      }
+
+      console.log(`[CONTROLLER] Returning results for session: ${sessionId}`);
       res.json(results);
 
     } catch (error: any) {

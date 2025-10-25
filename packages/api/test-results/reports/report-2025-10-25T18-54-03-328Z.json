@@ -1,0 +1,61 @@
+{
+  "summary": {
+    "total": 47,
+    "passed": 43,
+    "failed": 4,
+    "healed": 0,
+    "duration": 171145,
+    "coverage": 32
+  },
+  "discovery": {
+    "website": {
+      "url": "https://comathedu.id/",
+      "pagesFound": 15,
+      "userFlows": 2
+    },
+    "api": {
+      "endpointsFound": 0
+    }
+  },
+  "execution": {
+    "total": 47,
+    "passed": 43,
+    "failed": 4,
+    "healed": 0,
+    "duration": 171145
+  },
+  "failures": [
+    {
+      "category": "APP_BUG",
+      "rootCause": "Application behavior does not match expectations",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "Element locator is outdated or incorrect",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "Element locator is outdated or incorrect",
+      "confidence": 0.6
+    },
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "Element locator is outdated or incorrect",
+      "confidence": 0.6
+    }
+  ],
+  "config": {
+    "websiteUrl": "https://comathedu.id/",
+    "depth": "deep",
+    "enableHealing": true,
+    "createJiraTickets": false,
+    "headless": false,
+    "parallelWorkers": 3,
+    "captureVideo": true,
+    "captureScreenshots": true,
+    "aiAnalysisEnabled": true
+  },
+  "timestamp": "2025-10-25T18:54:03.328Z"
+}

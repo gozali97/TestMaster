@@ -178,15 +178,23 @@ export class AutonomousTestingService {
   /**
    * Get results
    */
-  async getResults(sessionId: string): Promise<AutonomousTestingResult | null> {
+  async getResults(sessionId: string): Promise<AutonomousTestingResult | { status: 'in_progress' } | null> {
     console.log(`\n📊 [GET_RESULTS] Request for session: ${sessionId}`);
     const session = this.sessions.get(sessionId);
     if (!session) {
       console.error('❌ [GET_RESULTS] Session not found:', sessionId);
+      console.log('Available sessions:', Array.from(this.sessions.keys()));
       return null;
     }
-    console.log(`✅ [GET_RESULTS] Session found. Has result: ${!!session.result}`);
-    return session?.result || null;
+    
+    // If session exists but result not ready yet, return in_progress
+    if (!session.result) {
+      console.log('⏳ [GET_RESULTS] Session found but result not ready yet - returning in_progress');
+      return { status: 'in_progress' } as any;
+    }
+    
+    console.log(`✅ [GET_RESULTS] Session found with result`);
+    return session.result;
   }
 
   /**
