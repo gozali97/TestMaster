@@ -12,6 +12,7 @@ import analyticsRoutes from './modules/analytics/analytics.routes';
 import aiRoutes from './modules/ai/ai.routes';
 import metricsRoutes from './modules/metrics/metrics.routes';
 import autonomousTestingRoutes from './modules/autonomous-testing/autonomous-testing.routes';
+import multiPanelRoutes from './modules/autonomous-testing/multi-panel.routes';
 import { metricsMiddleware } from './middleware/metricsMiddleware';
 import { Logger } from './utils/logger';
 
@@ -45,6 +46,7 @@ app.use('/api/projects', objectsRoutes);
 app.use('/api', analyticsRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/autonomous-testing', autonomousTestingRoutes);
+app.use('/api/autonomous-testing/multi-panel', multiPanelRoutes);
 
 const startServer = async () => {
   try {

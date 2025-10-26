@@ -89,7 +89,7 @@ export class SmartAuthDetector {
       console.log('✅ Login form detected:');
       console.log(`   - Username field: ${usernameField.name || usernameField.id || usernameField.placeholder}`);
       console.log(`   - Password field: ${passwordField.name || passwordField.id || passwordField.placeholder}`);
-      console.log(`   - Submit button: ${submitButton?.text || 'detected'}`);
+      console.log(`   - Submit button: ${submitButton?.text || 'not found (will press Enter)'}`);
 
       return {
         hasLogin: true,
@@ -97,7 +97,7 @@ export class SmartAuthDetector {
         loginForm: {
           usernameField,
           passwordField,
-          submitButton: submitButton!
+          submitButton: submitButton  // Can be undefined, will press Enter instead
         },
         loginMethod: 'form'
       };
@@ -230,7 +230,7 @@ export interface LoginDetectionResult {
   loginForm?: {
     usernameField: ElementInfo;
     passwordField: ElementInfo;
-    submitButton: ElementInfo;
+    submitButton?: ElementInfo;  // Optional: can press Enter if not found
   };
   loginMethod: 'form' | 'oauth' | 'none';
 }

@@ -6,6 +6,8 @@
  */
 
 export { AutonomousTestingOrchestrator } from './AutonomousTestingOrchestrator';
+export { MultiPanelOrchestrator } from './MultiPanelOrchestrator';
+export { RBACTester } from './RBACTester';
 export type {
   AutonomousTestingConfig,
   AutonomousTestingResult,

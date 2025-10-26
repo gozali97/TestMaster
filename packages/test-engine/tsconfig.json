@@ -2,11 +2,13 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "../",
+    "rootDir": "./src",
     "lib": ["ES2022", "DOM"],
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+    "skipLibCheck": true,
+    "noEmitOnError": false
   },
-  "include": ["src/**/*", "../api/src/services/ai/**/*", "../api/src/utils/logger.ts"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
 }

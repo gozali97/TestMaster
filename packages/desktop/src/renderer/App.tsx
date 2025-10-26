@@ -5,11 +5,12 @@ import { TestCaseList } from './components/Tests/TestCaseList';
 import { Recorder } from './components/Recorder/Recorder';
 import { TestExecutionRunner } from './components/Execution/TestExecutionRunner';
 import { ApiService } from './services/api.service';
-import AutonomousTestingPage from '../pages/AutonomousTestingSimple';
+import AutonomousTestingPage from '../pages/AutonomousTesting';
+import AutonomousTestingMultiPanel from '../pages/AutonomousTestingMultiPanel';
 import './App.css';
 
 function App() {
-  const [activeView, setActiveView] = useState<'projects' | 'tests' | 'editor' | 'recorder' | 'objects' | 'execution' | 'autonomous'>('projects');
+  const [activeView, setActiveView] = useState<'projects' | 'tests' | 'editor' | 'recorder' | 'objects' | 'execution' | 'autonomous' | 'multipanel'>('projects');
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   const [selectedTest, setSelectedTest] = useState<number | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -154,6 +155,12 @@ function App() {
             >
               🤖 Autonomous Testing
             </button>
+            <button 
+              className={activeView === 'multipanel' ? 'active' : ''}
+              onClick={() => setActiveView('multipanel')}
+            >
+              🎯 Multi-Panel Testing
+            </button>
           </nav>
         </aside>
         
@@ -223,6 +230,8 @@ function App() {
           {activeView === 'execution' && <TestExecutionRunner />}
           
           {activeView === 'autonomous' && <AutonomousTestingPage />}
+          
+          {activeView === 'multipanel' && <AutonomousTestingMultiPanel />}
         </main>
       </div>
     </div>

@@ -22,34 +22,77 @@ export class EnhancedLoginFlow {
     console.log(`   Password: ${'*'.repeat(credentials.password.length)}`);
 
     try {
-      // Navigate to login page
-      console.log(`   Navigating to: ${loginInfo.loginPage!.url}`);
-      await this.page.goto(loginInfo.loginPage!.url, {
-        waitUntil: 'domcontentloaded',
-        timeout: 30000
-      });
-
-      await this.page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
+      // Validate loginInfo has required fields
+      if (!loginInfo.loginForm) {
+        throw new Error('Login form information is missing');
+      }
+      
+      if (!loginInfo.loginForm.usernameField || !loginInfo.loginForm.passwordField) {
+        throw new Error('Login form fields are incomplete');
+      }
+      
+      // Note: submitButton is optional, we can press Enter if not found
+      
+      // Navigate to login page (only if loginPage is provided, otherwise assume we're already there)
+      if (loginInfo.loginPage && loginInfo.loginPage.url) {
+        console.log(`   Navigating to: ${loginInfo.loginPage.url}`);
+        await this.page.goto(loginInfo.loginPage.url, {
+          waitUntil: 'domcontentloaded',
+          timeout: 30000
+        });
+        await this.page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
+      } else {
+        console.log(`   Skipping navigation (already on login page)`);
+      }
 
       // Fill username
       console.log('   Filling username...');
-      await this.fillField(loginInfo.loginForm!.usernameField, credentials.username);
+      await this.fillField(loginInfo.loginForm.usernameField, credentials.username);
 
       // Fill password
       console.log('   Filling password...');
-      await this.fillField(loginInfo.loginForm!.passwordField, credentials.password);
+      await this.fillField(loginInfo.loginForm.passwordField, credentials.password);
 
       // Wait a bit for any JavaScript validation
       await this.page.waitForTimeout(500);
 
-      // Click submit
-      console.log('   Clicking submit button...');
-      await this.clickButton(loginInfo.loginForm!.submitButton);
+      // Submit form (click button or press Enter)
+      if (loginInfo.loginForm.submitButton) {
+        console.log('   Clicking submit button...');
+        await this.clickButton(loginInfo.loginForm.submitButton);
+      } else {
+        console.log('   No submit button found, pressing Enter on password field...');
+        // Try to find password field and press Enter
+        const passwordField = loginInfo.loginForm.passwordField;
+        if (passwordField.id) {
+          await this.page.press(`#${passwordField.id}`, 'Enter');
+        } else if (passwordField.name) {
+          await this.page.press(`[name="${passwordField.name}"]`, 'Enter');
+        } else if (passwordField.locator) {
+          await this.page.press(passwordField.locator, 'Enter');
+        } else {
+          // Fallback: press Enter on any password field
+          await this.page.press('input[type="password"]', 'Enter');
+        }
+      }
 
       // Wait for navigation/response
       console.log('   Waiting for response...');
-      await this.page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
-      await this.page.waitForTimeout(2000); // Extra wait for redirects
+      
+      // Wait for navigation with longer timeout
+      try {
+        await Promise.race([
+          this.page.waitForNavigation({ timeout: 10000 }),
+          this.page.waitForLoadState('networkidle', { timeout: 15000 })
+        ]);
+      } catch (e) {
+        console.log('   Navigation/network idle timeout (this is normal for some sites)');
+      }
+      
+      // Extra wait for SPA redirects and JavaScript
+      await this.page.waitForTimeout(3000);
+      
+      console.log(`   Current URL after submit: ${this.page.url()}`);
 
       // Verify login success
       console.log('   Verifying login success...');
@@ -100,7 +143,11 @@ export class EnhancedLoginFlow {
   /**
    * Fill a form field with multiple locator strategies
    */
-  private async fillField(field: ElementInfo, value: string): Promise<void> {
+  private async fillField(field: ElementInfo | undefined, value: string): Promise<void> {
+    if (!field) {
+      throw new Error('Field is undefined');
+    }
+    
     let filled = false;
 
     // Strategy 1: By ID
@@ -136,7 +183,7 @@ export class EnhancedLoginFlow {
     }
 
     if (!filled) {
-      throw new Error(`Could not fill field: ${field.name || field.id || field.placeholder}`);
+      throw new Error(`Could not fill field: ${field.name || field.id || field.placeholder || 'unknown'}`);
     }
   }
 
@@ -188,64 +235,92 @@ export class EnhancedLoginFlow {
    */
   private async verifyLoginSuccess(): Promise<{ success: boolean; reason?: string }> {
     const currentUrl = this.page.url();
+    console.log(`   [VERIFY] Current URL: ${currentUrl}`);
 
     // Check 1: URL changed away from login
-    if (!currentUrl.includes('/login') && !currentUrl.includes('/signin')) {
+    if (!currentUrl.includes('/login') && 
+        !currentUrl.includes('/signin') && 
+        !currentUrl.includes('/sign-in') &&
+        !currentUrl.includes('/masuk')) {
+      console.log(`   [VERIFY] ✅ URL changed away from login page`);
       return { success: true, reason: 'Redirected away from login page' };
     }
 
-    // Check 2: Look for success indicators
+    // Check 2: Look for error messages FIRST (if error found, login definitely failed)
+    console.log(`   [VERIFY] Checking for error messages...`);
+    const errorSelectors = [
+      'text=/incorrect|invalid|wrong|error|gagal|salah/i',
+      '.error',
+      '.alert-danger',
+      '[role="alert"]',
+      '.error-message',
+      '.login-error',
+      '.alert-error'
+    ];
+
+    for (const selector of errorSelectors) {
+      try {
+        const errorElement = await this.page.locator(selector).first().isVisible({ timeout: 1000 });
+        if (errorElement) {
+          const errorText = await this.page.locator(selector).first().textContent();
+          console.log(`   [VERIFY] ❌ Found error: ${errorText}`);
+          return { success: false, reason: `Login error found: ${errorText}` };
+        }
+      } catch (e) {}
+    }
+
+    // Check 3: Look for success indicators
+    console.log(`   [VERIFY] Checking for success indicators...`);
     const successIndicators = [
-      'dashboard', 'profile', 'account', 'welcome',
-      'logout', 'sign out', 'my account', 'settings'
+      'dashboard', 'admin', 'profile', 'account', 'welcome',
+      'logout', 'sign out', 'keluar', 'my account', 'settings',
+      'beranda', 'dasbor'
     ];
 
     for (const indicator of successIndicators) {
       try {
-        const found = await this.page.locator(`text=${indicator}`).first().isVisible({ timeout: 2000 });
+        const found = await this.page.locator(`text=/${indicator}/i`).first().isVisible({ timeout: 1000 });
         if (found) {
+          console.log(`   [VERIFY] ✅ Found success indicator: ${indicator}`);
           return { success: true, reason: `Found success indicator: ${indicator}` };
         }
       } catch (e) {}
     }
 
-    // Check 3: Look for error messages
-    const errorSelectors = [
-      '.error',
-      '.alert-danger',
-      '[role="alert"]',
-      '.error-message',
-      '.login-error'
-    ];
+    // Check 4: Check if login form still visible (strong indicator of failure)
+    console.log(`   [VERIFY] Checking if login form still visible...`);
+    try {
+      const passwordFieldStillVisible = await this.page.locator('input[type="password"]').first().isVisible({ timeout: 1000 });
+      if (passwordFieldStillVisible) {
+        console.log(`   [VERIFY] ⚠️ Login form still visible`);
+        // But this doesn't mean failure - maybe it's a different page with password field
+        // So we don't return false here, continue checking
+      }
+    } catch (e) {}
 
-    for (const selector of errorSelectors) {
-      try {
-        const hasError = await this.page.locator(selector).first().isVisible({ timeout: 1000 });
-        if (hasError) {
-          const errorText = await this.page.locator(selector).first().textContent();
-          return { success: false, reason: `Error: ${errorText}` };
-        }
-      } catch (e) {}
+    // If still on login page without clear indicators, it's likely a failure
+    if (currentUrl.includes('/login') || currentUrl.includes('/signin') || currentUrl.includes('/sign-in') || currentUrl.includes('/masuk')) {
+      console.log(`   [VERIFY] ⚠️ Still on login page (${currentUrl}), checking credentials...`);
+      
+      // Last attempt: wait a bit more and check again
+      console.log(`   [VERIFY] Waiting 2 more seconds for any late redirects...`);
+      await this.page.waitForTimeout(2000);
+      
+      const finalUrl = this.page.url();
+      console.log(`   [VERIFY] Final URL after extra wait: ${finalUrl}`);
+      
+      if (finalUrl !== currentUrl) {
+        console.log(`   [VERIFY] ✅ URL changed after extra wait!`);
+        return { success: true, reason: 'URL changed after extra wait' };
+      }
+      
+      console.log(`   [VERIFY] ❌ Still on login page after all checks`);
+      return { success: false, reason: 'Still on login page - credentials may be incorrect or site requires captcha/2FA' };
     }
 
-    // Check 4: Look for error text patterns
-    const errorPatterns = ['invalid', 'incorrect', 'failed', 'error', 'wrong'];
-    for (const pattern of errorPatterns) {
-      try {
-        const found = await this.page.locator(`text=${pattern}`).first().isVisible({ timeout: 1000 });
-        if (found) {
-          return { success: false, reason: `Error text found: ${pattern}` };
-        }
-      } catch (e) {}
-    }
-
-    // If still on login page without clear indicators
-    if (currentUrl.includes('/login') || currentUrl.includes('/signin')) {
-      return { success: false, reason: 'Still on login page, unclear status' };
-    }
-
-    // Default: assume success if no errors found
-    return { success: true, reason: 'No error indicators found' };
+    // Default: assume success if no errors found and not on login page
+    console.log(`   [VERIFY] ✅ No errors found, assuming success`);
+    return { success: true, reason: 'No error indicators found, assuming login successful' };
   }
 
   /**

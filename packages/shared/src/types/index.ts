@@ -4,3 +4,4 @@ export * from './test.types';
 export * from './execution.types';
 export * from './common.types';
 export * from './healing';
+export * from './autonomous-multi-panel.types';
