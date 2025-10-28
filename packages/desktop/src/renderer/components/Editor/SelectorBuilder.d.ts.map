@@ -1,0 +1,1 @@
+{"version":3,"file":"SelectorBuilder.d.ts","sourceRoot":"","sources":["SelectorBuilder.tsx"],"names":[],"mappings":"AACA,OAAO,uBAAuB,CAAC;AAE/B,UAAU,oBAAoB;IAC5B,eAAe,CAAC,EAAE,MAAM,CAAC;IACzB,MAAM,EAAE,CAAC,QAAQ,EAAE,MAAM,KAAK,IAAI,CAAC;IACnC,QAAQ,EAAE,MAAM,IAAI,CAAC;CACtB;AAED,eAAO,MAAM,eAAe,GAAI,uCAA4C,oBAAoB,4CAuP/F,CAAC"}
