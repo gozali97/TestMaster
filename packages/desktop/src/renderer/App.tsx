@@ -4,17 +4,21 @@ import { ProjectManager } from './components/Projects/ProjectManager';
 import { TestCaseList } from './components/Tests/TestCaseList';
 import { Recorder } from './components/Recorder/Recorder';
 import { TestExecutionRunner } from './components/Execution/TestExecutionRunner';
+import { BulkTestExecutionRunner } from './components/Execution/BulkTestExecutionRunner';
 import { ApiService } from './services/api.service';
+import { LoginForm, RegisterForm } from './components/Auth';
 import AutonomousTestingPage from '../pages/AutonomousTesting';
 import AutonomousTestingMultiPanel from '../pages/AutonomousTestingMultiPanel';
 import './App.css';
 
 function App() {
-  const [activeView, setActiveView] = useState<'projects' | 'tests' | 'editor' | 'recorder' | 'objects' | 'execution' | 'autonomous' | 'multipanel'>('projects');
+  const [activeView, setActiveView] = useState<'projects' | 'tests' | 'editor' | 'recorder' | 'objects' | 'execution' | 'execution-bulk' | 'autonomous' | 'multipanel'>('projects');
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
   const [selectedTest, setSelectedTest] = useState<number | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
+  const [showExecuteMenu, setShowExecuteMenu] = useState(false);
 
   useEffect(() => {
     // Check authentication on mount
@@ -43,56 +47,41 @@ function App() {
     setActiveView('tests');
   };
 
-  // Simple login form (inline)
-  const LoginForm = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-
-    const handleLogin = async (e: React.FormEvent) => {
-      e.preventDefault();
-      const result = await ApiService.login(email, password);
-      if (result.success && result.data?.tokens) {
-        ApiService.storeTokens(result.data.tokens.accessToken, result.data.tokens.refreshToken);
-        setIsAuthenticated(true);
-        setShowLogin(false);
-      } else {
-        setError(result.error || 'Login failed');
-      }
-    };
-
-    return (
-      <div className="login-overlay">
-        <div className="login-modal">
-          <h2>Login to TestMaster</h2>
-          {error && <div className="error-message">{error}</div>}
-          <form onSubmit={handleLogin}>
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button type="submit">Login</button>
-          </form>
-          <p className="login-hint">
-            Tip: Login with your web credentials or register at http://localhost:3000/register
-          </p>
-        </div>
-      </div>
-    );
+  // Authentication handlers
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+    setShowLogin(false);
+    setShowRegister(false);
   };
 
+  const handleSwitchToRegister = () => {
+    setShowLogin(false);
+    setShowRegister(true);
+  };
+
+  const handleSwitchToLogin = () => {
+    setShowRegister(false);
+    setShowLogin(true);
+  };
+
+  // Show register form
+  if (showRegister) {
+    return (
+      <RegisterForm 
+        onSuccess={handleLoginSuccess}
+        onSwitchToLogin={handleSwitchToLogin}
+      />
+    );
+  }
+
+  // Show login form
   if (!isAuthenticated || showLogin) {
-    return <LoginForm />;
+    return (
+      <LoginForm 
+        onSuccess={handleLoginSuccess}
+        onSwitchToRegister={handleSwitchToRegister}
+      />
+    );
   }
 
   return (
@@ -143,12 +132,37 @@ function App() {
             >
               📦 Objects
             </button>
-            <button 
-              className={activeView === 'execution' ? 'active' : ''}
-              onClick={() => setActiveView('execution')}
-            >
-              ▶️ Execute
-            </button>
+            <div className="menu-dropdown">
+              <button 
+                className={`menu-dropdown-toggle ${activeView === 'execution' || activeView === 'execution-bulk' ? 'active' : ''}`}
+                onClick={() => setShowExecuteMenu(!showExecuteMenu)}
+              >
+                ▶️ Execute
+                <span className="dropdown-arrow">{showExecuteMenu ? '▲' : '▼'}</span>
+              </button>
+              {showExecuteMenu && (
+                <div className="menu-dropdown-content">
+                  <button
+                    className={activeView === 'execution' ? 'active' : ''}
+                    onClick={() => {
+                      setActiveView('execution');
+                      setShowExecuteMenu(false);
+                    }}
+                  >
+                    ▶️ Execute Test
+                  </button>
+                  <button
+                    className={activeView === 'execution-bulk' ? 'active' : ''}
+                    onClick={() => {
+                      setActiveView('execution-bulk');
+                      setShowExecuteMenu(false);
+                    }}
+                  >
+                    ⚡ Execute All Tests
+                  </button>
+                </div>
+              )}
+            </div>
             <button 
               className={activeView === 'autonomous' ? 'active' : ''}
               onClick={() => setActiveView('autonomous')}
@@ -228,6 +242,8 @@ function App() {
           )}
           
           {activeView === 'execution' && <TestExecutionRunner />}
+          
+          {activeView === 'execution-bulk' && <BulkTestExecutionRunner />}
           
           {activeView === 'autonomous' && <AutonomousTestingPage />}
           

@@ -13,7 +13,7 @@ export class TestCase extends Model {
   declare dataBindings: Record<string, any>;
   declare tags: string[];
   declare priority: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
-  declare status: 'ACTIVE' | 'DRAFT' | 'DEPRECATED';
+  declare status: 'DRAFT' | 'ACTIVE' | 'DISABLED' | 'ARCHIVED';
   declare createdBy: number;
   declare createdAt: Date;
   declare updatedAt: Date;
@@ -64,8 +64,8 @@ TestCase.init(
       defaultValue: 'MEDIUM',
     },
     status: {
-      type: DataTypes.ENUM('ACTIVE', 'DRAFT', 'DEPRECATED'),
-      defaultValue: 'ACTIVE',
+      type: DataTypes.ENUM('DRAFT', 'ACTIVE', 'DISABLED', 'ARCHIVED'),
+      defaultValue: 'DRAFT',
     },
     createdBy: {
       type: DataTypes.INTEGER,

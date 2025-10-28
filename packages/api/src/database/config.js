@@ -4,7 +4,7 @@ module.exports = {
   development: {
     username: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'testmaster',
+    database: process.env.DB_NAME || 'clone-katalon',
     host: process.env.DB_HOST || '127.0.0.1',
     port: parseInt(process.env.DB_PORT || '3306'),
     dialect: 'mysql',
@@ -13,7 +13,7 @@ module.exports = {
   production: {
     username: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'testmaster',
+    database: process.env.DB_NAME || 'clone-katalon',
     host: process.env.DB_HOST || '127.0.0.1',
     port: parseInt(process.env.DB_PORT || '3306'),
     dialect: 'mysql',

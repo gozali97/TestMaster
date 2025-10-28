@@ -7,7 +7,7 @@ export class TestsController {
   async create(req: AuthRequest, res: Response) {
     try {
       const { projectId } = req.params;
-      const { name, description, type, steps, tags, priority } = req.body;
+      const { name, description, type, steps, tags, priority, status } = req.body;
 
       const project = await Project.findOne({
         where: { id: projectId, organizationId: req.user.organizationId },
@@ -25,7 +25,7 @@ export class TestsController {
         steps: steps || [],
         tags: tags || [],
         priority: priority || 'MEDIUM',
-        status: 'ACTIVE',
+        status: status || 'DRAFT',
         createdBy: req.user.id,
       });
 
@@ -135,6 +135,43 @@ export class TestsController {
 
       await testCase.destroy();
       res.json({ success: true, message: 'Test case deleted successfully' });
+    } catch (error: any) {
+      res.status(500).json({ success: false, error: error.message });
+    }
+  }
+
+  async duplicate(req: AuthRequest, res: Response) {
+    try {
+      const { projectId, testId } = req.params;
+
+      const originalTestCase = await TestCase.findOne({
+        where: { id: testId, projectId, deletedAt: null },
+        include: [{ model: Project, where: { organizationId: req.user.organizationId } }],
+      });
+
+      if (!originalTestCase) {
+        return res.status(404).json({ success: false, error: 'Test case not found' });
+      }
+
+      // Create duplicate with modified name
+      const duplicatedTestCase = await TestCase.create({
+        projectId: originalTestCase.projectId,
+        name: `${originalTestCase.name} (Copy)`,
+        description: originalTestCase.description,
+        type: originalTestCase.type,
+        steps: originalTestCase.steps,
+        tags: originalTestCase.tags,
+        priority: originalTestCase.priority,
+        status: 'DRAFT', // Set as draft by default
+        dataBindings: originalTestCase.dataBindings,
+        createdBy: req.user.id,
+      });
+
+      res.status(201).json({ 
+        success: true, 
+        data: duplicatedTestCase,
+        message: 'Test case duplicated successfully' 
+      });
     } catch (error: any) {
       res.status(500).json({ success: false, error: error.message });
     }

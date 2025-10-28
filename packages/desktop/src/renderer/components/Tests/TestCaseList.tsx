@@ -60,6 +60,55 @@ export const TestCaseList = ({ projectId, onSelectTest, onBack }: TestCaseListPr
     }
   };
 
+  const handleDuplicate = async (testId: number, testName: string) => {
+    if (!confirm(`Duplicate test case "${testName}"?`)) {
+      return;
+    }
+
+    const result = await ApiService.duplicateTestCase(projectId, testId);
+
+    if (result.success) {
+      alert('Test case duplicated successfully!');
+      loadTestCases(); // Reload to show the new copy
+    } else {
+      alert('Failed to duplicate test case: ' + (result.error || 'Unknown error'));
+    }
+  };
+
+  const handleCopyJSON = (testCase: TestCase) => {
+    const jsonData = JSON.stringify(testCase, null, 2);
+    
+    // Copy to clipboard
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(jsonData)
+        .then(() => {
+          alert('Test case JSON copied to clipboard!');
+        })
+        .catch(() => {
+          // Fallback method
+          copyToClipboardFallback(jsonData);
+        });
+    } else {
+      copyToClipboardFallback(jsonData);
+    }
+  };
+
+  const copyToClipboardFallback = (text: string) => {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.select();
+    try {
+      document.execCommand('copy');
+      alert('Test case JSON copied to clipboard!');
+    } catch (err) {
+      alert('Failed to copy to clipboard');
+    }
+    document.body.removeChild(textArea);
+  };
+
   if (loading) {
     return (
       <div className="test-case-list loading">
@@ -125,7 +174,27 @@ export const TestCaseList = ({ projectId, onSelectTest, onBack }: TestCaseListPr
                 }}
                 title="Edit test case"
               >
-                ✏️
+                ✏️ Edit
+              </button>
+              <button
+                className="btn-icon btn-duplicate"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDuplicate(testCase.id, testCase.name);
+                }}
+                title="Duplicate test case"
+              >
+                📋 Copy
+              </button>
+              <button
+                className="btn-icon btn-json"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCopyJSON(testCase);
+                }}
+                title="Copy as JSON"
+              >
+                📄 JSON
               </button>
               <button
                 className="btn-icon btn-delete"

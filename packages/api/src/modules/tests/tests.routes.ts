@@ -12,5 +12,6 @@ router.get('/:projectId/tests', (req, res) => testsController.list(req, res));
 router.get('/:projectId/tests/:testId', (req, res) => testsController.getById(req, res));
 router.put('/:projectId/tests/:testId', (req, res) => testsController.update(req, res));
 router.delete('/:projectId/tests/:testId', (req, res) => testsController.delete(req, res));
+router.post('/:projectId/tests/:testId/duplicate', (req, res) => testsController.duplicate(req, res));
 
 export default router;

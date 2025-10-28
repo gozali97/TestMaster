@@ -220,6 +220,15 @@ export class ApiService {
     });
   }
 
+  /**
+   * Duplicate test case
+   */
+  static async duplicateTestCase(projectId: number, testId: number): Promise<ApiResponse<TestCase>> {
+    return this.request<TestCase>(`/api/projects/${projectId}/tests/${testId}/duplicate`, {
+      method: 'POST',
+    });
+  }
+
   // ============================================
   // AUTHENTICATION
   // ============================================

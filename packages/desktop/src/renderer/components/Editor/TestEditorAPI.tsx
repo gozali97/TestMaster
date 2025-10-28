@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { 
-  Save, Play, ArrowLeft, Plus, Trash2, Edit, GripVertical, 
+  Save, ArrowLeft, Plus, Trash2, Edit, GripVertical, 
   Eye, Code, AlertCircle, CheckCircle, Loader, FileText,
   PlayCircle, X, Copy, Settings
 } from 'lucide-react';
@@ -21,6 +21,8 @@ export const TestEditorAPI = ({ projectId, testCaseId, onBack }: TestEditorAPIPr
   const [testCase, setTestCase] = useState<TestCase | null>(null);
   const [testName, setTestName] = useState('');
   const [testDescription, setTestDescription] = useState('');
+  const [testStatus, setTestStatus] = useState<'DRAFT' | 'ACTIVE' | 'DISABLED' | 'ARCHIVED'>('DRAFT');
+  const [scriptContent, setScriptContent] = useState('{\n  "name": "",\n  "description": "",\n  "status": "DRAFT",\n  "steps": []\n}');
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -32,6 +34,19 @@ export const TestEditorAPI = ({ projectId, testCaseId, onBack }: TestEditorAPIPr
       loadTestCase();
     }
   }, [projectId, testCaseId]);
+
+  // Update script when switching to script view or steps change
+  useEffect(() => {
+    if (view === 'script') {
+      const updatedScript = JSON.stringify({ 
+        name: testName, 
+        description: testDescription,
+        status: testStatus,
+        steps 
+      }, null, 2);
+      setScriptContent(updatedScript);
+    }
+  }, [view, testName, testDescription, testStatus, steps]);
 
   const loadTestCase = async () => {
     if (!projectId || !testCaseId) return;
@@ -45,7 +60,15 @@ export const TestEditorAPI = ({ projectId, testCaseId, onBack }: TestEditorAPIPr
       setTestCase(result.data);
       setTestName(result.data.name || '');
       setTestDescription(result.data.description || '');
+      const status = result.data.status as 'DRAFT' | 'ACTIVE' | 'DISABLED' | 'ARCHIVED';
+      setTestStatus(status || 'DRAFT');
       setSteps(result.data.steps || []);
+      setScriptContent(JSON.stringify({ 
+        name: result.data.name, 
+        description: result.data.description, 
+        status: result.data.status,
+        steps: result.data.steps 
+      }, null, 2));
     } else {
       setError(result.error || 'Failed to load test case');
     }
@@ -71,6 +94,7 @@ export const TestEditorAPI = ({ projectId, testCaseId, onBack }: TestEditorAPIPr
     const data = {
       name: testName,
       description: testDescription,
+      status: testStatus,
       steps,
       variables: [],
     };
@@ -91,6 +115,36 @@ export const TestEditorAPI = ({ projectId, testCaseId, onBack }: TestEditorAPIPr
     }
 
     setSaving(false);
+  };
+
+  const generateStepsFromScript = () => {
+    try {
+      const parsed = JSON.parse(scriptContent);
+      
+      if (parsed.name) setTestName(parsed.name);
+      if (parsed.description) setTestDescription(parsed.description);
+      if (parsed.status) setTestStatus(parsed.status);
+      if (parsed.steps && Array.isArray(parsed.steps)) {
+        setSteps(parsed.steps);
+        setSuccessMessage('Steps generated from script successfully!');
+        setTimeout(() => setSuccessMessage(''), 3000);
+        setView('visual');
+      } else {
+        setError('Invalid script format: steps array not found');
+      }
+    } catch (err: any) {
+      setError(`Failed to parse script: ${err.message}`);
+    }
+  };
+
+  const updateScriptFromSteps = () => {
+    const updatedScript = JSON.stringify({ 
+      name: testName, 
+      description: testDescription,
+      status: testStatus,
+      steps 
+    }, null, 2);
+    setScriptContent(updatedScript);
   };
 
   const addStep = (step: TestStep) => {
@@ -250,7 +304,7 @@ export const TestEditorAPI = ({ projectId, testCaseId, onBack }: TestEditorAPIPr
         </div>
 
         {/* Test Info */}
-        <div className="mt-4 grid grid-cols-2 gap-4">
+        <div className="mt-4 grid grid-cols-3 gap-4">
           <div>
             <label className="label">Test Name *</label>
             <input
@@ -270,6 +324,19 @@ export const TestEditorAPI = ({ projectId, testCaseId, onBack }: TestEditorAPIPr
               value={testDescription}
               onChange={(e) => setTestDescription(e.target.value)}
             />
+          </div>
+          <div>
+            <label className="label">Status *</label>
+            <select
+              className="input"
+              value={testStatus}
+              onChange={(e) => setTestStatus(e.target.value as 'DRAFT' | 'ACTIVE' | 'DISABLED' | 'ARCHIVED')}
+            >
+              <option value="DRAFT">📝 Draft</option>
+              <option value="ACTIVE">✅ Active</option>
+              <option value="DISABLED">⏸️ Disabled</option>
+              <option value="ARCHIVED">📦 Archived</option>
+            </select>
           </div>
         </div>
 
@@ -468,16 +535,49 @@ export const TestEditorAPI = ({ projectId, testCaseId, onBack }: TestEditorAPIPr
         ) : (
           /* Script View */
           <div className="card max-w-4xl mx-auto">
-            <div className="card-header">
+            <div className="card-header flex items-center justify-between">
               <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
                 <Code className="w-5 h-5" />
                 Generated Test Script
               </h3>
+              <div className="flex gap-2">
+                <button
+                  onClick={updateScriptFromSteps}
+                  className="btn-secondary text-sm flex items-center gap-2"
+                  title="Update script from current visual steps"
+                >
+                  <ArrowLeft className="w-4 h-4 rotate-180" />
+                  Update from Steps
+                </button>
+                <button
+                  onClick={generateStepsFromScript}
+                  className="btn-primary text-sm flex items-center gap-2"
+                  title="Generate steps from this script"
+                >
+                  <Settings className="w-4 h-4" />
+                  Generate Steps from Script
+                </button>
+              </div>
             </div>
             <div className="card-body">
-              <pre className="bg-gray-50 text-gray-800 p-4 rounded-lg overflow-x-auto font-mono text-sm">
-                {JSON.stringify({ name: testName, description: testDescription, steps }, null, 2)}
-              </pre>
+              <div className="mb-4 p-3 bg-blue-900 bg-opacity-20 border border-blue-700 rounded-lg">
+                <p className="text-blue-300 text-sm">
+                  💡 <strong>Tip:</strong> Edit the script directly below, then click "Generate Steps from Script" 
+                  to convert it into visual steps. Or click "Update from Steps" to sync the script with your current visual steps.
+                </p>
+              </div>
+              <textarea
+                className="w-full h-96 bg-gray-50 text-gray-800 p-4 rounded-lg font-mono text-sm border border-gray-300 focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-opacity-20 outline-none transition-all resize-none"
+                value={scriptContent}
+                onChange={(e) => setScriptContent(e.target.value)}
+                placeholder='{\n  "name": "Test name",\n  "description": "Test description",\n  "status": "DRAFT",\n  "steps": []\n}'
+                spellCheck={false}
+                autoComplete="off"
+                style={{ 
+                  fontFamily: 'Consolas, Monaco, "Courier New", monospace',
+                  tabSize: 2
+                }}
+              />
             </div>
           </div>
         )}

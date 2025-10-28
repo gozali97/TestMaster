@@ -393,3 +393,350 @@
 .execution-logs::-webkit-scrollbar-thumb:hover {
   background: #666;
 }
+
+/* ===============================================
+   BULK TEST EXECUTION STYLES
+   =============================================== */
+
+.bulk-execution .bulk-selection-panel {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.bulk-execution .selection-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.bulk-execution .selection-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.bulk-execution .selection-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bulk-execution .btn-sm {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.bulk-execution .selected-count {
+  background: #16a34a;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.bulk-execution .execution-mode-selector {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.bulk-execution .execution-mode-selector label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.bulk-execution .radio-group {
+  display: flex;
+  gap: 20px;
+}
+
+.bulk-execution .radio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 10px 16px;
+  background: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.bulk-execution .radio-label:hover {
+  border-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.bulk-execution .radio-label input[type="radio"] {
+  cursor: pointer;
+}
+
+.bulk-execution .radio-label span {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.bulk-execution .mode-description {
+  margin-top: 12px;
+  padding: 12px;
+  background: #fffbeb;
+  border-left: 3px solid #f59e0b;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #92400e;
+  line-height: 1.5;
+}
+
+.bulk-execution .test-list-by-project {
+  max-height: 500px;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.bulk-execution .project-group {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.bulk-execution .project-group:last-child {
+  border-bottom: none;
+}
+
+.bulk-execution .project-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+}
+
+.bulk-execution .project-toggle {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+}
+
+.bulk-execution .toggle-icon {
+  font-size: 12px;
+  width: 16px;
+}
+
+.bulk-execution .project-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.bulk-execution .project-checkbox input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+.bulk-execution .project-name {
+  font-weight: 600;
+  color: #111827;
+  font-size: 15px;
+}
+
+.bulk-execution .test-count {
+  margin-left: 8px;
+  color: #6b7280;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.bulk-execution .project-tests {
+  padding: 8px 0;
+}
+
+.bulk-execution .no-tests {
+  padding: 20px;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+.bulk-execution .test-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 12px 48px;
+  border-bottom: 1px solid #f3f4f6;
+  transition: background 0.2s;
+}
+
+.bulk-execution .test-item:hover {
+  background: #f9fafb;
+}
+
+.bulk-execution .test-item.selected {
+  background: #f0fdf4;
+}
+
+.bulk-execution .test-item.executing {
+  background: #fef3c7;
+  border-left: 3px solid #f59e0b;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.bulk-execution .test-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.bulk-execution .test-checkbox input[type="checkbox"] {
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+}
+
+.bulk-execution .test-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.bulk-execution .test-name {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+}
+
+.bulk-execution .test-description {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.bulk-execution .test-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.bulk-execution .status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.bulk-execution .test-duration {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.bulk-execution .execution-actions {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.bulk-execution .btn-lg {
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.bulk-execution .execution-summary {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.bulk-execution .execution-summary h3 {
+  margin: 0 0 20px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.bulk-execution .summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+}
+
+.bulk-execution .summary-card {
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.2s;
+}
+
+.bulk-execution .summary-card:hover {
+  transform: translateY(-2px);
+}
+
+.bulk-execution .summary-card.success {
+  background: #f0fdf4;
+  border-color: #86efac;
+}
+
+.bulk-execution .summary-card.failed {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.bulk-execution .summary-card.error {
+  background: #fef3c7;
+  border-color: #fde68a;
+}
+
+.bulk-execution .summary-card.running {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.bulk-execution .card-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.bulk-execution .card-label {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}

@@ -3,6 +3,14 @@
 
 Write-Host "🧹 Cleaning TestMaster Desktop..." -ForegroundColor Cyan
 
+# Kill port 5175 specifically
+Write-Host "Checking port 5175..." -ForegroundColor Yellow
+$processId = Get-NetTCPConnection -LocalPort 5175 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess
+if ($processId) {
+    Write-Host "Killing process on port 5175 (PID: $processId)..." -ForegroundColor Yellow
+    Stop-Process -Id $processId -Force -ErrorAction SilentlyContinue
+}
+
 # Kill all electron processes
 Write-Host "Stopping Electron processes..." -ForegroundColor Yellow
 Get-Process electron -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue

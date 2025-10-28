@@ -1,9 +1,9 @@
-import { app, BrowserWindow, Menu } from 'electron';
-import path from 'path';
-import { setupIPC } from './ipc';
-import { createMenu } from './menu';
+const { app, BrowserWindow, Menu } = require('electron');
+const path = require('path');
+const { setupIPC } = require('./ipc');
+const { createMenu } = require('./menu');
 
-let mainWindow: BrowserWindow | null = null;
+let mainWindow: any = null;
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({

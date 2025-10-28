@@ -106,7 +106,7 @@
 }
 
 .test-case-card {
-  background: #111827fff;
+  background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 6px;
   overflow: hidden;
@@ -193,28 +193,48 @@
   display: flex;
   gap: 8px;
   padding: 12px 20px;
-  background: #111827fff;
+  background: #f9fafb;
   border-top: 1px solid #e5e7eb;
+  flex-wrap: wrap;
 }
 
 .btn-icon {
-  padding: 6px 10px;
+  padding: 6px 12px;
   background: transparent;
   border: 1px solid #e5e7eb;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .btn-icon:hover {
   background: #f3f4f6;
   border-color: #16a34a;
+  transform: translateY(-1px);
+}
+
+.btn-icon.btn-duplicate:hover {
+  background: #f0f9ff;
+  border-color: #3b82f6;
+  color: #1e40af;
+}
+
+.btn-icon.btn-json:hover {
+  background: #fef3c7;
+  border-color: #f59e0b;
+  color: #92400e;
 }
 
 .btn-icon.btn-delete:hover {
-  background: #5a1e1e;
-  border-color: #f14c4c;
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #991b1b;
+  transform: translateY(-1px);
 }
 
 .empty-state {

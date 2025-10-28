@@ -6,7 +6,10 @@
     "module": "commonjs",
     "lib": ["ES2022"],
     "noUnusedLocals": false,
-    "noUnusedParameters": false
+    "noUnusedParameters": false,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "include": ["src/main/**/*", "src/preload/**/*"],
   "exclude": ["node_modules", "dist", "src/renderer/**/*"]

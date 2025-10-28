@@ -1,0 +1,46 @@
+{
+  "summary": {
+    "total": 52,
+    "passed": 51,
+    "failed": 1,
+    "healed": 0,
+    "duration": 44216,
+    "coverage": 81
+  },
+  "discovery": {
+    "website": {
+      "url": "https://staging-firstmedica.k24.co.id/",
+      "pagesFound": 42,
+      "userFlows": 2
+    },
+    "api": {
+      "endpointsFound": 0
+    }
+  },
+  "execution": {
+    "total": 52,
+    "passed": 51,
+    "failed": 1,
+    "healed": 0,
+    "duration": 44216
+  },
+  "failures": [
+    {
+      "category": "TEST_ISSUE",
+      "rootCause": "Element locator is outdated or incorrect",
+      "confidence": 0.6
+    }
+  ],
+  "config": {
+    "websiteUrl": "https://staging-firstmedica.k24.co.id/",
+    "depth": "deep",
+    "enableHealing": true,
+    "createJiraTickets": false,
+    "headless": false,
+    "parallelWorkers": 3,
+    "captureVideo": true,
+    "captureScreenshots": true,
+    "aiAnalysisEnabled": true
+  },
+  "timestamp": "2025-10-28T07:26:31.744Z"
+}

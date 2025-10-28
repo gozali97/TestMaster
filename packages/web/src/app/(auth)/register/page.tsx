@@ -193,6 +193,26 @@ export default function RegisterPage() {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Already a member?</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <Link
+            href="/login"
+            className="w-full inline-flex justify-center items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          >
+            Sign in to your account
+          </Link>
+        </div>
+
+        <div className="mt-6">
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
               <span className="px-2 bg-white text-gray-500">Or continue with</span>
             </div>
           </div>
@@ -217,10 +237,10 @@ export default function RegisterPage() {
           </div>
         </div>
 
-        <p className="mt-6 text-center text-sm text-gray-600">
+        <p className="mt-6 text-center text-xs text-gray-500">
           Already have an account?{' '}
           <Link href="/login" className="text-blue-600 hover:underline font-medium">
-            Sign in
+            Sign in here
           </Link>
         </p>
 
