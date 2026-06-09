@@ -185,6 +185,34 @@ export const BulkTestExecutionRunner = () => {
       const testCaseDetails = testResult.data;
       setExecutionLogs(prev => [...prev, `📊 Steps to execute: ${testCaseDetails.steps?.length || 0}`]);
 
+      // ✅ Prefer LOCAL execution inside the desktop app (bundled Playwright).
+      const electron = (window as any).electron;
+      if (electron?.executeTest) {
+        setExecutionLogs(prev => [...prev, `🖥️ Running locally with bundled Playwright...`]);
+        const local = await electron.executeTest({
+          steps: testCaseDetails.steps || [],
+          config: { headless: false, captureVideo: false, captureScreenshots: true },
+          name: testCaseDetails.name,
+        });
+
+        const duration = Date.now() - startTime;
+        const status = (local.status || 'ERROR').toUpperCase();
+        updateTestResult(testId, {
+          status: status.toLowerCase() as any,
+          duration,
+          error: local.errorMessage,
+          completedAt: new Date().toISOString(),
+        });
+
+        const icon = status === 'PASSED' ? '✅' : status === 'FAILED' ? '❌' : '⚠️';
+        setExecutionLogs(prev => [...prev, `${icon} ${test.name}: ${status} (${(duration / 1000).toFixed(2)}s)`]);
+        if (local.errorMessage) {
+          setExecutionLogs(prev => [...prev, `   Error: ${local.errorMessage}`]);
+        }
+        setExecutionLogs(prev => [...prev, `─────────────────────────────────`]);
+        return;
+      }
+
       // Execute test via API with visible browser
       setExecutionLogs(prev => [...prev, `🌐 Launching browser...`]);
       const execResult = await ApiService.executeTest(

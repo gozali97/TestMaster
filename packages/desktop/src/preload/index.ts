@@ -6,6 +6,13 @@ const api = {
     ipcRenderer.invoke('write-file', filePath, content),
   getProjectPath: () => ipcRenderer.invoke('get-project-path'),
   openPath: (path: string) => ipcRenderer.invoke('open-path', path),
+
+  // Run a Playwright test locally inside the app (uses bundled Chromium).
+  executeTest: (payload: {
+    steps: any[];
+    config?: Record<string, any>;
+    name?: string;
+  }) => ipcRenderer.invoke('execute-test', payload),
   
   project: {
     open: (projectPath: string) => ipcRenderer.send('project:open', projectPath),

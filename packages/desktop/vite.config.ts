@@ -10,7 +10,7 @@ export default defineConfig({
     host: 'localhost',
   },
   build: {
-    outDir: 'dist',
+    outDir: 'dist/renderer',
     emptyOutDir: true,
   },
 });

@@ -1,8 +1,24 @@
 import { ipcMain, shell } from 'electron';
 import { readFile, writeFile } from 'fs/promises';
 import path from 'path';
+import { runLocalExecution, LocalExecutionPayload } from '../execution/executor';
 
 export const setupIPC = () => {
+  // Run a Playwright test locally (in-app) using the bundled browser.
+  ipcMain.handle('execute-test', async (_event, payload: LocalExecutionPayload) => {
+    try {
+      const result = await runLocalExecution(payload);
+      return result;
+    } catch (error: any) {
+      return {
+        success: false,
+        status: 'ERROR',
+        errorMessage: error.message,
+        logs: [`❌ ${error.message}`],
+      };
+    }
+  });
+
   ipcMain.handle('read-file', async (event, filePath: string) => {
     try {
       const content = await readFile(filePath, 'utf-8');

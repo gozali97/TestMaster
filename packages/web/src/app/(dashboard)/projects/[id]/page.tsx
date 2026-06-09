@@ -26,15 +26,15 @@ export default function ProjectDetailPage() {
     fetchTests();
   }, [projectId]);
 
+  const goToNewTest = () => router.push(`/projects/${projectId}/tests/new`);
+  const goToTest = (testId: number) => router.push(`/projects/${projectId}/tests/${testId}`);
+
   const fetchProjectDetails = async () => {
     try {
       const token = localStorage.getItem('accessToken');
       const response = await fetch(`http://localhost:3001/api/projects/${projectId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
       const data = await response.json();
       if (data.success) {
         setProject(data.data);
@@ -50,11 +50,8 @@ export default function ProjectDetailPage() {
     try {
       const token = localStorage.getItem('accessToken');
       const response = await fetch(`http://localhost:3001/api/projects/${projectId}/tests`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
       const data = await response.json();
       if (data.success) {
         setTests(data.data);
@@ -136,8 +133,11 @@ export default function ProjectDetailPage() {
         <div className="p-6 border-b">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold">Test Cases</h2>
-            <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              Create Test Case
+            <button
+              onClick={goToNewTest}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              + Create Test Case
             </button>
           </div>
         </div>
@@ -165,9 +165,15 @@ export default function ProjectDetailPage() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {tests.map((test) => (
-                <tr key={test.id} className="hover:bg-gray-50 cursor-pointer">
+                <tr
+                  key={test.id}
+                  onClick={() => goToTest(test.id)}
+                  className="hover:bg-gray-50 cursor-pointer"
+                >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{test.name}</div>
+                    <div className="text-sm font-medium text-blue-600 hover:underline">
+                      {test.name}
+                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-sm text-gray-500">{test.type}</span>
@@ -193,7 +199,10 @@ export default function ProjectDetailPage() {
           {tests.length === 0 && (
             <div className="text-center py-12">
               <p className="text-gray-500 mb-4">No test cases yet</p>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+              <button
+                onClick={goToNewTest}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
                 Create Your First Test Case
               </button>
             </div>

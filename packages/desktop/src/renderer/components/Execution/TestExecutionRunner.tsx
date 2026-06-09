@@ -90,6 +90,47 @@ export const TestExecutionRunner = () => {
       setExecutionLogs(prev => [...prev, `📝 Loaded test case: ${testCaseDetails.name}`]);
       setExecutionLogs(prev => [...prev, `📊 Steps to execute: ${testCaseDetails.steps?.length || 0}`]);
 
+      // ✅ Prefer LOCAL execution inside the desktop app (bundled Playwright).
+      // This lets the packaged app run automation without the API server or a
+      // system-wide Playwright install.
+      const electron = (window as any).electron;
+      if (electron?.executeTest) {
+        setExecutionLogs(prev => [...prev, '🖥️ Running locally with bundled Playwright...']);
+        if (recordVideo) {
+          setExecutionLogs(prev => [...prev, '📹 Video recording enabled']);
+        }
+
+        const local = await electron.executeTest({
+          steps: testCaseDetails.steps || [],
+          config: {
+            headless: false,
+            captureVideo: recordVideo,
+            captureScreenshots: true,
+          },
+          name: testCaseDetails.name,
+        });
+
+        (local.logs || []).forEach((l: string) =>
+          setExecutionLogs(prev => [...prev, typeof l === 'string' ? l : JSON.stringify(l)])
+        );
+
+        setExecutionResult({
+          id: Date.now(),
+          testCaseId: selectedTestCase,
+          status: (local.status || 'error').toLowerCase() as any,
+          startedAt: new Date().toISOString(),
+          completedAt: new Date().toISOString(),
+          duration: local.duration || 0,
+          logs: local.logs || [],
+          screenshots: local.screenshots || [],
+          video: local.video,
+          error: local.errorMessage,
+        });
+
+        setIsExecuting(false);
+        return;
+      }
+
       // Execute test via API
       setExecutionLogs(prev => [...prev, '▶️  Executing test...']);
       if (recordVideo) {

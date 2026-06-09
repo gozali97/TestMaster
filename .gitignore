@@ -41,6 +41,9 @@ coverage/
 dist-electron/
 release/
 
+# Bundled Playwright browsers (large; populated by `npm run bundle-browsers`)
+packages/desktop/ms-playwright/
+
 # Misc
 .turbo/
 .cache/
