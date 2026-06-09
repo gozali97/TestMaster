@@ -90,13 +90,26 @@ export class ApiService {
         },
       });
 
-      // Handle 401 - Token expired
+      // Handle 401 - invalid credentials or expired session
       if (response.status === 401) {
-        // TODO: Implement token refresh logic
+        const body = await this.handleResponse<T>(response);
+
+        // For auth endpoints (login/register/refresh), a 401 means invalid
+        // credentials — let the caller (e.g. LoginForm) show the real message.
+        // Do NOT navigate, otherwise in the packaged Electron app (file://)
+        // this would try to load file:///login and fail.
+        if (endpoint.includes('/api/auth/')) {
+          return body;
+        }
+
+        // Otherwise the session expired: clear tokens and reload the app so
+        // App.tsx re-renders the login screen (works for both file:// and dev).
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.href = '/login';
-        return { success: false, error: 'Unauthorized' };
+        if (typeof window !== 'undefined') {
+          window.location.reload();
+        }
+        return body;
       }
 
       return await this.handleResponse<T>(response);
