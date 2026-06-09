@@ -5,9 +5,12 @@
 
 import { transformTestSteps, getStepDescription, EngineTestStep } from './stepTransformer';
 
-// test-engine is a CommonJS build; require keeps resolution simple.
+// Import PlaywrightRunner DIRECTLY (not via the package barrel index).
+// The barrel re-exports the autonomous orchestrator + TestGenerator, which
+// require files from packages/api/src that don't exist inside the packaged
+// app — loading the barrel would crash the desktop app on startup.
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { PlaywrightRunner } = require('@testmaster/test-engine');
+const { PlaywrightRunner } = require('@testmaster/test-engine/dist/playwright/PlaywrightRunner');
 
 export interface LocalExecutionPayload {
   steps: any[];

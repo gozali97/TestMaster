@@ -59,6 +59,7 @@
   "build": {
     "appId": "com.testmaster.app",
     "productName": "TestMaster",
+    "executableName": "testmaster",
     "electronVersion": "28.3.3",
     "directories": {
       "output": "release"
